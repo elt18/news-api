@@ -5,6 +5,7 @@ import GoogleMapReact from 'google-map-react';
 import './App.css';
 
 const api = 'https://newsapi.org/v2/top-headlines?country=id&category=business&apiKey=b21e09ff1b6e44329137276b2c256414'
+const mapApi = 'https://restcountries.eu/rest/v2/all'
 
 class App extends Component {
   constructor(props) {
@@ -15,7 +16,8 @@ class App extends Component {
         lat: -6.1751,
         lng: 106.8650
       },
-      zoom: 11
+      zoom: 5,
+      city: []
     }
   }
 
@@ -26,6 +28,13 @@ class App extends Component {
         news: news.data.articles
       })
     })
+    axios.get(mapApi)
+    .then(cities => {
+      this.setState({
+        city: cities.data
+      })
+    })
+
   }
 
   render() {
@@ -37,12 +46,17 @@ class App extends Component {
         defaultCenter={this.state.center}
         defaultZoom={this.state.zoom}
       >
-        <img
-        className="awan"
-        src="http://files.softicons.com/download/web-icons/vector-stylish-weather-icons-by-bartosz-kaszubowski/ico/cloud.rain.ico"
-        lat={this.state.center.lat}
-        lng={this.state.center.lng}
-        />
+      {this.state.city.map((c, i)=>
+        <div key={i}
+        lat={c.latlng[0]}
+        lng={c.latlng[1]}>
+        <h6>{c.name}</h6>
+          <img
+          className="awan"
+          src="http://www.luxus-india.com/wp-content/uploads/2015/12/stock-vector-flat-city-icon-209365492.png"
+          />
+        </div>
+      )}
         </GoogleMapReact>
       </div>
         {this.state.news.map((n, i)=>
